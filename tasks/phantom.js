@@ -19,7 +19,6 @@ module.exports = function(grunt) {
     done = this.async();
 
     // Spawn PhantomJS.
-    console.log(binPath, options.runner, options.url)
     phantom = grunt.util.spawn({
       cmd: binPath,
       args: [options.runner, options.url]
