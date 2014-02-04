@@ -36,20 +36,14 @@
      * Allows the test results to be used in java based CI
      * systems like CruiseControl and Hudson.
      *
-     * @param {string} savePath where to save the files
-     * @param {boolean} consolidate whether to save nested describes within the
-     *                  same file as their parent; default: true
+     * @param {string}  filename to save
      * @param {boolean} useDotNotation whether to separate suite names with
      *                  dots rather than spaces (ie "Class.init" not
      *                  "Class init"); default: true
-     * @param {string} filePrefix is the string value that is prepended to the
-     *                  xml output file; default: 'TEST-'
      */
-    var JUnitXmlReporter = function(savePath, consolidate, useDotNotation, filePrefix) {
-        this.savePath = savePath || '';
-        this.consolidate = consolidate === jasmine.undefined ? true : consolidate;
+    var JUnitXmlReporter = function(savePath, useDotNotation) {
+        this.savePath = savePath || 'results.xml';
         this.useDotNotation = useDotNotation === jasmine.undefined ? true : useDotNotation;
-        this.filePrefix = filePrefix || 'TEST-';
     };
     JUnitXmlReporter.started_at = null; // will be updated when test runner start
     JUnitXmlReporter.finished_at = null; // will be updated after all files have been written
@@ -126,26 +120,15 @@
         },
 
         reportRunnerResults: function(runner) {
+            var output = '<?xml version="1.0" encoding="UTF-8" ?>';
+            output += "\n<testsuites>";
             var suites = runner.suites();
             for (var i = 0; i < suites.length; i++) {
                 var suite = suites[i];
-                var fileName = this.filePrefix + this.getFullName(suite, true) + '.xml';
-                var output = '<?xml version="1.0" encoding="UTF-8" ?>';
-                // if we are consolidating, only write out top-level suites
-                if (this.consolidate && suite.parentSuite) {
-                    continue;
-                }
-                else if (this.consolidate) {
-                    output += "\n<testsuites>";
-                    output += this.getNestedOutput(suite);
-                    output += "\n</testsuites>";
-                    this.writeFile(this.savePath, fileName, output);
-                }
-                else {
-                    output += suite.output;
-                    this.writeFile(this.savePath, fileName, output);
-                }
+                output += this.getNestedOutput(suite);
             }
+            output += "\n</testsuites>";
+            this.writeFile('', this.savePath, output);
             // When all done, make it known on JUnitXmlReporter
             JUnitXmlReporter.finished_at = (new Date()).getTime();
         },
