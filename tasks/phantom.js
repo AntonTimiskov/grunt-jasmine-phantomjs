@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
 
-  grunt.registerMultiTask('phantom', 'Start PhantomJS for specified URL', function() {
+  grunt.registerMultiTask('jasmine-phantom', 'Start PhantomJS for specified URL', function() {
     var options, port, stopped, done, phantom, binPath, which;
 
     try {
