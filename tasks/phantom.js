@@ -38,7 +38,7 @@ module.exports = function(grunt) {
     // Log PhantomJS output.
     phantom.stdout.setEncoding('utf-8');
     phantom.stdout.on('data', function (chunk) {
-      grunt.log.debug('PhantomJS: ' + chunk);
+      grunt.log.writeln('PhantomJS: ' + chunk);
     });
 
     phantom.on('exit',function(code){
