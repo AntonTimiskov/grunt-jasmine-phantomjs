@@ -1,0 +1,9 @@
+{
+    "name": "grunt-jasmine-phantomjs",
+    "version": "0.1.0",
+    "private": true,
+    "optionalDependencies": {
+      "phantomjs": "*"
+    }
+}
+
