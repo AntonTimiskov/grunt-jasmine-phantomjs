@@ -19,12 +19,15 @@ module.exports = function(grunt) {
     done = this.async();
 
     // Spawn PhantomJS.
+    console.log(binPath, options.runner, options.url)
     phantom = grunt.util.spawn({
       cmd: binPath,
       args: [options.runner, options.url]
-    }, function () {
-      stopped = true;
-      grunt.fatal('PhantomJS killed unexpectedly');
+    }, function (err) {
+      if (err) {
+          stopped = true;
+          grunt.fatal('PhantomJS killed unexpectedly');
+      }
     });
 
     // Log PhantomJS error.
@@ -39,14 +42,22 @@ module.exports = function(grunt) {
       grunt.log.debug('PhantomJS: ' + chunk);
     });
 
+    phantom.on('exit',function(code){
+        grunt.log.ok('PhantomJS stopped');
+        stopped = true;
+        done();
+    });
+
     // Kill PhantomJS on exit.
     process.on('exit', function () {
       if (!stopped) {
         phantom.kill();
-        grunt.log.ok('PhantomJS stopped');
+        grunt.log.ok('PhantomJS stopped on Grunt termination');
         done();
       }
     });
 
   });
 };
+
+
